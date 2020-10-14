@@ -1,0 +1,10 @@
+bin
+obj
+*.user
+*.suo
+.vs
+dist
+server
+*.zip
+launchSettings.json
+appsettings.Development.json
