@@ -3,6 +3,7 @@ obj
 *.user
 *.suo
 .vs
+dist
 *.zip
 launchSettings.json
 appsettings.Development.json

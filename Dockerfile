@@ -1,5 +1,5 @@
-# build server
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine as build
+# build "server" image
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine
 
 RUN apk add git
 
@@ -8,6 +8,7 @@ COPY BuildScriptToDockerfile.csproj .
 RUN dotnet restore
 
 COPY . .
+
 # version assets
 RUN GITHASH=`git rev-parse --short HEAD`; \
     sed -i'' -e "s/GITHASH/$GITHASH/g" Properties/AssemblyInfo.cs; \
@@ -17,20 +18,20 @@ RUN GITHASH=`git rev-parse --short HEAD`; \
 RUN dotnet build -c Release
 
 # test
-RUN dotnet test
+RUN dotnet test -c Release
 
 # deploy
-RUN dotnet publish -c Release -o dist
+RUN dotnet publish -c Release -o /dist
 
 
-# production server
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
+# production runtime "server" image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine
 
 ENV ASPNETCORE_ENVIRONMENT Production
 ENV ASPNETCORE_URLS http://+:80
 EXPOSE 80
 
 WORKDIR /app
-COPY --from=build /src/dist .
+COPY --from=build /dist .
 
 CMD ["dotnet", "BuildScriptToDockerfile.dll"]

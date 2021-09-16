@@ -17,9 +17,11 @@ dotnet restore
 dotnet build -c Release
 
 # test
-dotnet test
+dotnet test -c Release
 
 # deploy
 dotnet publish -c Release -o dist
 Compress-Archive -Path dist -DestinationPath BuildScriptToDockerfile.zip
-robocopy /mir dist server # TODO: set to UNC path of destination machine
+# TODO: copy to target server and unzip
+
+git checkout .\Properties\AssemblyInfo.cs
